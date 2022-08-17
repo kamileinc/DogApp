@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">DogApp</string>
+    <string name="photo_not_found">Something went wrong - the photo was not found</string>
+    <string name="no_urls">Something went wrong - unable to get urls</string>
+    <string name="picture_description">picture of a dog</string>
+</resources>
