@@ -3,7 +3,10 @@ package com.example.dogapp.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.dogapp.utils.Resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class DogPhotoViewModel : ViewModel() {
 
@@ -12,9 +15,11 @@ class DogPhotoViewModel : ViewModel() {
         get() = _urlNumber
 
     fun getSum(url: String) {
-        val numbers = filterNumbers(url)
-        val sum = addNumbers(numbers)
-        _urlNumber.value = Resource.Success(sum)
+        viewModelScope.launch(Dispatchers.IO) {
+            val numbers = filterNumbers(url)
+            val sum = addNumbers(numbers)
+            _urlNumber.postValue(Resource.Success(sum))
+        }
     }
 
     private fun filterNumbers(url: String): List<Int> {

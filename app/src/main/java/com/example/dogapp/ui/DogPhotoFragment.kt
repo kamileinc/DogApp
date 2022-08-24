@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
@@ -27,7 +26,6 @@ class DogPhotoFragment : Fragment() {
     private val binding get() = _binding!!
     private val args: DogPhotoFragmentArgs by navArgs()
     private val viewModel: DogPhotoViewModel by viewModels()
-    private var urlNumber: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,8 +38,6 @@ class DogPhotoFragment : Fragment() {
 
         viewModel.getSum(args.url)
 
-        loadPhoto()
-
         return view
     }
 
@@ -52,10 +48,10 @@ class DogPhotoFragment : Fragment() {
 
     private fun setUpObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.urlNumber.observe(requireActivity()) { event ->
+            viewModel.urlNumber.observe(viewLifecycleOwner) { event ->
                 when (event) {
                     is Resource.Success -> {
-                        urlNumber = event.data
+                        loadPhoto(event.data)
                     }
                     else -> Unit
                 }
@@ -63,7 +59,7 @@ class DogPhotoFragment : Fragment() {
         }
     }
 
-    private fun loadPhoto() {
+    private fun loadPhoto(urlNumber: Int?) {
         Glide.with(requireContext())
             .load(args.url)
             .placeholder(R.drawable.ic_baseline_no_photography_24)
